@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.spring.batch</groupId>
-	<artifactId>ch03-04-decision</artifactId>
+	<artifactId>ch03-04-decisions</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ch03-04-decision</name>
+	<name>ch03-04-decisions</name>
 	<description>Demo for decisions</description>
 
 
