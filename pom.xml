@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>foo.sb.batch</groupId>
+    <artifactId>sb-batch-minella-customized</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    
+    <modules>
+        <module>ch02-01-hello-batch</module>
+        <module>ch03-01-transitions</module>
+        <module>ch03-02-flow</module>
+		<module>ch03-03-split</module>
+		<module>ch03-04-decisions</module>
+		<module>ch03-05-nestedJobs</module>
+		<module>ch03-06-listeners</module>
+		<module>ch03-07-jobParameters</module>
+    </modules>
+
+
+</project>
