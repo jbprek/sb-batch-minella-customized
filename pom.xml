@@ -17,6 +17,10 @@
 		<module>ch03-05-nestedJobs</module>
 		<module>ch03-06-listeners</module>
 		<module>ch03-07-jobParameters</module>
+        <module>ch04-01-inputInterfaces</module>
+        <module>ch04-02-databaseInput</module>
+        <module>ch09-01-startingAJob</module>
+        <module>ch09-02-stoppingAJob</module>
     </modules>
 
 

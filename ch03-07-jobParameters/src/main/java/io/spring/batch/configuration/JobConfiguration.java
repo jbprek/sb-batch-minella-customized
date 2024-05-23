@@ -15,6 +15,7 @@
  */
 package io.spring.batch.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -31,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Michael Minella
  */
 @Configuration
+@Slf4j
 public class JobConfiguration {
 
 	@Autowired
@@ -43,7 +45,7 @@ public class JobConfiguration {
 	@StepScope
 	public Tasklet helloWorldTasklet(@Value("#{jobParameters['message']}") String message) {
 		return (stepContribution, chunkContext) -> {
-			System.out.println(message);
+			log.info(message);
 			return RepeatStatus.FINISHED;
 		};
 	}

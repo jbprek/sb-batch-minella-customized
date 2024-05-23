@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  persons-mysql-server:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+    - batch-net
+
+volumes:
+  db_data:
+    
+networks:
+  batch-net:
