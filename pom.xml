@@ -21,6 +21,7 @@
         <module>ch04-02-databaseInput</module>
         <module>ch09-01-startingAJob</module>
         <module>ch09-02-stoppingAJob</module>
+        <module>ch09-03-schedulingAJob</module>
     </modules>
 
 

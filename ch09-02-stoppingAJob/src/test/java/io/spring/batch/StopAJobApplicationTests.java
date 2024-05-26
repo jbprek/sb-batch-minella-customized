@@ -1,9 +1,7 @@
 package io.spring.batch;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class StopAJobApplicationTests {
@@ -11,5 +9,5 @@ public class StopAJobApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-ó
+
 }
