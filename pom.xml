@@ -19,6 +19,14 @@
 		<module>ch03-07-jobParameters</module>
         <module>ch04-01-inputInterfaces</module>
         <module>ch04-02-databaseInput</module>
+        <!-- Ch 08 Scaling Jobs -->
+        <module>ch08-01-multithreadedStep</module>
+        <module>ch08-02-asyncItemProcessorItemWriter</module>
+        <module>ch08-03-localPartitioning</module>
+        <module>ch08-04-remotePartitioning</module>
+        <module>ch08-05-remoteChunking</module>
+
+        <!-- Ch 9 Orchestrating Jobs -->
         <module>ch09-01-startingAJob</module>
         <module>ch09-02-stoppingAJob</module>
         <module>ch09-03-schedulingAJob</module>
