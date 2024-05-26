@@ -15,9 +15,8 @@
  */
 package io.spring.batch.configuration;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
@@ -36,18 +35,20 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author Michael Minella
  */
 @Configuration
-@Sl4j
+@Slf4j
 @RequiredArgsConstructor
 public class JobConfiguration extends DefaultBatchConfigurer implements ApplicationContextAware {
 
