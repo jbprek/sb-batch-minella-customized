@@ -19,6 +19,10 @@
 		<module>ch03-07-jobParameters</module>
         <module>ch04-01-inputInterfaces</module>
         <module>ch04-02-databaseInput</module>
+        <!-- Ch 07 Error Handling -->
+        <module>ch07/retry</module>
+
+
         <!-- Ch 08 Scaling Jobs -->
         <module>ch08-01-multithreadedStep</module>
         <module>ch08-02-asyncItemProcessorItemWriter</module>
