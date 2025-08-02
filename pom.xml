@@ -21,6 +21,7 @@
         <module>ch04-02-databaseInput</module>
         <!-- Ch 07 Error Handling -->
         <module>ch07/retry</module>
+        <module>ch07/retry-operator</module>
 
 
         <!-- Ch 08 Scaling Jobs -->

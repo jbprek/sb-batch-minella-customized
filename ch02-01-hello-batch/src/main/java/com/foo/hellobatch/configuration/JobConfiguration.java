@@ -1,44 +1,60 @@
 package com.foo.hellobatch.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
+
+@Slf4j
 @Configuration
 @EnableBatchProcessing
 public class JobConfiguration {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
     @Bean
-    public Step step1(){
-        return stepBuilderFactory.get("step1")
-                .tasklet(new Tasklet() {
-                    @Override
-                    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
-                        return null;
-                    }
-                }).build();
-    }
-
-
-    @Bean
-    public Job helloWorldJob() {
-        return jobBuilderFactory.get("helloWorldJob")
-                .start(step1())
+    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("step1", jobRepository)
+                .tasklet((StepContribution stepContribution, ChunkContext chunkContext) -> {
+                    // Simulates step execution logic
+                    log.info("Executing step1...");
+                    return RepeatStatus.FINISHED;
+                }, transactionManager)
                 .build();
     }
+
+    @Bean
+    public Job helloWorldJob(JobRepository jobRepository, Step step1) {
+        return new JobBuilder("helloWorldJob", jobRepository)
+                .start(step1)
+                .build();
+    }
+
+    @Bean
+    public CommandLineRunner runJob(JobLauncher jobLauncher, Job helloWorldJob) {
+        return args -> {
+            log.info("Starting the helloWorldJob...");
+            jobLauncher.run(
+                    helloWorldJob,
+                    new JobParametersBuilder()
+                            .addLong("time", System.currentTimeMillis()) // Ensure unique JobParameters
+                            .toJobParameters()
+            );
+            log.info("Job execution completed.");
+        };
+    }
+
 }
+
+
