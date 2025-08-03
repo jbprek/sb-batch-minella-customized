@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.spring.batch;
+package com.foo.transitions;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -37,11 +38,16 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class BatchConfiguration {
+
+    private final JobRepository jobRepository;
+
+    private final PlatformTransactionManager transactionManager;
 
 
     @Bean
-    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step1() {
         return new StepBuilder("step1", jobRepository)
                 .tasklet((StepContribution stepContribution, ChunkContext chunkContext) -> {
                     log.info("Executing step1...");
@@ -52,7 +58,7 @@ public class BatchConfiguration {
 
     // Use of anonymous class vs lambda
     @Bean
-    public Step step2(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step2() {
         return new StepBuilder("step2", jobRepository)
                 .tasklet(new Tasklet() {
                     @Override
@@ -66,7 +72,7 @@ public class BatchConfiguration {
 
 
     @Bean
-    public Step step3(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step3() {
         return new StepBuilder("step3", jobRepository)
                 .tasklet((StepContribution stepContribution, ChunkContext chunkContext) -> {
                     log.info("Executing step3...");
@@ -91,11 +97,11 @@ public class BatchConfiguration {
 
 
     @Bean
-    public Job transitionJobSimplestNext(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Job transitionJobSimplestNext(JobRepository jobRepository) {
         return new JobBuilder("transitionJobNext", jobRepository)
-                .start(step1(jobRepository, transactionManager))
-                .next(step2(jobRepository, transactionManager))
-                .next(step3(jobRepository, transactionManager))
+                .start(step1())
+                .next(step2())
+                .next(step3())
                 .build();
     }
 

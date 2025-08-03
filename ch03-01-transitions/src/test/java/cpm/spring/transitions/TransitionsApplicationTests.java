@@ -1,4 +1,4 @@
-package io.spring.batch;
+package cpm.spring.transitions;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
