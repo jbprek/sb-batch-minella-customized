@@ -1,5 +1,6 @@
 package com.foo.hellobatch;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -22,13 +23,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @Configuration
 @EnableBatchProcessing
+@RequiredArgsConstructor
 public class BatchConfiguration {
 
-    @Autowired
-    private JobRepository jobRepository;
+    private final JobRepository jobRepository;
 
-    @Autowired
-    private PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager transactionManager;
 
     @Bean
     public Step step1() {
