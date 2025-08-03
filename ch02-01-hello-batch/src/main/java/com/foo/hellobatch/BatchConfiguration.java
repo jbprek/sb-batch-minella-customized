@@ -12,6 +12,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +24,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableBatchProcessing
 public class BatchConfiguration {
 
+    @Autowired
+    private JobRepository jobRepository;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
     @Bean
-    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Step step1() {
         return new StepBuilder("step1", jobRepository)
                 .tasklet((StepContribution stepContribution, ChunkContext chunkContext) -> {
                     // Simulates step execution logic
@@ -35,7 +42,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job helloWorldJob(JobRepository jobRepository, Step step1) {
+    public Job helloWorldJob(Step step1) {
         return new JobBuilder("helloWorldJob", jobRepository)
                 .start(step1)
                 .build();
