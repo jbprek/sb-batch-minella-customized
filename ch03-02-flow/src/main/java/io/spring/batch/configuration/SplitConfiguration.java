@@ -19,14 +19,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -49,39 +46,33 @@ public class SplitConfiguration {
 	@Bean
 	public Step splitStep1() {
 		return new StepBuilder("splitStep1", jobRepository)
-				.tasklet(new Tasklet() {
-					@Override
-					public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-						log.info("myStep was executed");
-						return RepeatStatus.FINISHED;
-					}
+				.tasklet((contribution, chunkContext) -> {
+					log.info("splitStep1 was executed");
+					return RepeatStatus.FINISHED;
 				}, transactionManager).build();
 	}
 
 	@Bean
 	public Step splitStep2() {
 		return new StepBuilder("splitStep2", jobRepository)
-				.tasklet(new Tasklet() {
-					@Override
-					public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-						log.info("myStep was executed");
-						return RepeatStatus.FINISHED;
-					}
+				.tasklet((contribution, chunkContext) -> {
+					log.info("splitStep2 was executed");
+					return RepeatStatus.FINISHED;
 				}, transactionManager).build();
 	}
 
 	@Bean
-	public Job splitJob(@Qualifier("foo") Flow foo, @Qualifier("foo") Flow bar) {
+	public Job splitJob(@Qualifier("foo") Flow foo, @Qualifier("bar") Flow bar) {
 		FlowBuilder<Flow> flowBuilder = new FlowBuilder<>("split");
 
-		Flow flow = flowBuilder.split(new SimpleAsyncTaskExecutor())
+		Flow splitFlow = flowBuilder.split(new SimpleAsyncTaskExecutor())
 				.add(foo, bar)
 				.end();
 
 		return new JobBuilder("splitJob", jobRepository)
 				.start(splitStep1())
 				.next(splitStep2())
-				.on("COMPLETED").to(flow)
+				.on("COMPLETED").to(splitFlow)
 				.end()
 				.build();
 	}

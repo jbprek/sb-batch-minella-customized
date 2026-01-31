@@ -45,7 +45,7 @@ public class FlowConfiguration {
 	public Step step1() {
 		return new StepBuilder("step1", jobRepository)
 				.tasklet((StepContribution stepContribution, ChunkContext chunkContext)  -> {
-					System.out.println("Step 1 from inside flow foo");
+					log.info("Step 1 from inside flow foo");
 					return RepeatStatus.FINISHED;
 				}, transactionManager).build();
 	}
@@ -54,7 +54,7 @@ public class FlowConfiguration {
 	public Step step2() {
 		return new StepBuilder("step2", jobRepository)
 				.tasklet((StepContribution stepContribution, ChunkContext chunkContext)  -> {
-					System.out.println("Step 2 from inside flow foo");
+					log.info("Step 2 from inside flow foo");
 					return RepeatStatus.FINISHED;
 				}, transactionManager).build();
 	}
