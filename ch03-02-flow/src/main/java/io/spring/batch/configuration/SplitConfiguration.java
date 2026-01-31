@@ -15,56 +15,59 @@
  */
 package io.spring.batch.configuration;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author Michael Minella
  */
 @Configuration
+@Slf4j
+@RequiredArgsConstructor
 public class SplitConfiguration {
 
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
+	private final JobRepository jobRepository;
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
+	private final PlatformTransactionManager transactionManager;
 
 	@Bean
 	public Step splitStep1() {
-		return stepBuilderFactory.get("splitStep1")
+		return new StepBuilder("splitStep1", jobRepository)
 				.tasklet(new Tasklet() {
 					@Override
 					public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-						System.out.println("myStep was executed");
+						log.info("myStep was executed");
 						return RepeatStatus.FINISHED;
 					}
-				}).build();
+				}, transactionManager).build();
 	}
 
 	@Bean
 	public Step splitStep2() {
-		return stepBuilderFactory.get("splitStep2")
+		return new StepBuilder("splitStep2", jobRepository)
 				.tasklet(new Tasklet() {
 					@Override
 					public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-						System.out.println("myStep was executed");
+						log.info("myStep was executed");
 						return RepeatStatus.FINISHED;
 					}
-				}).build();
+				}, transactionManager).build();
 	}
 
 	@Bean
@@ -75,7 +78,7 @@ public class SplitConfiguration {
 				.add(foo, bar)
 				.end();
 
-		return jobBuilderFactory.get("splitJob")
+		return new JobBuilder("splitJob", jobRepository)
 				.start(splitStep1())
 				.next(splitStep2())
 				.on("COMPLETED").to(flow)

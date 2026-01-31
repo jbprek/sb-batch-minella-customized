@@ -15,40 +15,48 @@
  */
 package io.spring.batch.configuration;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * step1 & step2 Steps are defined and  foo and bar flows both (step1 -> step2).
  */
 @Configuration
+@Slf4j
+@RequiredArgsConstructor
 public class FlowConfiguration {
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
+	private final JobRepository jobRepository;
+
+	private final PlatformTransactionManager transactionManager;
 
 	@Bean
 	public Step step1() {
-		return stepBuilderFactory.get("step1")
-				.tasklet((contribution, chunkContext) -> {
+		return new StepBuilder("step1", jobRepository)
+				.tasklet((StepContribution stepContribution, ChunkContext chunkContext)  -> {
 					System.out.println("Step 1 from inside flow foo");
 					return RepeatStatus.FINISHED;
-				}).build();
+				}, transactionManager).build();
 	}
 
 	@Bean
 	public Step step2() {
-		return stepBuilderFactory.get("step2")
-				.tasklet((contribution, chunkContext) -> {
+		return new StepBuilder("step2", jobRepository)
+				.tasklet((StepContribution stepContribution, ChunkContext chunkContext)  -> {
 					System.out.println("Step 2 from inside flow foo");
 					return RepeatStatus.FINISHED;
-				}).build();
+				}, transactionManager).build();
 	}
 
 	@Bean

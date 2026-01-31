@@ -15,52 +15,53 @@
  */
 package io.spring.batch.configuration;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author Michael Minella
  */
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class FlowFirstConfiguration {
 
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
+    private final JobRepository jobRepository;
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
+    private final PlatformTransactionManager transactionManager;
 
-	@Bean
-	public Step myFirstStep() {
-		return stepBuilderFactory.get("myFirstStep")
-				.tasklet(new Tasklet() {
-					@Override
-					public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-						log.info("myStep was executed");
-						return RepeatStatus.FINISHED;
-					}
-				}).build();
-	}
+    @Bean
+    public Step myFirstStep() {
+        return new StepBuilder("myFirstStep", jobRepository)
+                .tasklet(new Tasklet() {
+                    @Override
+                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                        log.info("myStep was executed");
+                        return RepeatStatus.FINISHED;
+                    }
+                }, transactionManager).build();
+    }
 
-	@Bean
-	public Job flowFirstJob(@Qualifier("foo") Flow flow) {
-		return jobBuilderFactory.get("flowFirstJob")
-				.start(flow)
-				.next(myFirstStep())
-				.end()
-				.build();
-	}
+    @Bean
+    public Job flowFirstJob(@Qualifier("foo") Flow flow) {
+        return new JobBuilder("flowFirstJob", jobRepository)
+                .start(flow)
+                .next(myFirstStep())
+                .end()
+                .build();
+    }
 }
