@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.spring.batch.configuration;
+package io.spring.batch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author Michael Minella
  */
 @Configuration
-@Profile("launcher")
 @RequiredArgsConstructor
 @Slf4j
 public class JobLauncherConfiguration  {
 
-	public final JobBuilderFactory jobBuilderFactory;
-	public final StepBuilderFactory stepBuilderFactory;
+	private final JobRepository jobRepository;
+
+	private final PlatformTransactionManager transactionManager;
+
 	public final JobLauncher jobLauncher;
 
 	@Bean
@@ -52,11 +56,16 @@ public class JobLauncherConfiguration  {
 	}
 
 	@Bean
-	public Job job() {
-		return jobBuilderFactory.get("job")
-				.start(stepBuilderFactory.get("step1")
-					.tasklet(tasklet(null))
-					.build())
+	public Step step1(Tasklet tasklet) {
+		return new StepBuilder("step1", jobRepository)
+				.tasklet(tasklet, transactionManager)
+				.build();
+	}
+
+	@Bean
+	public Job job(Step step1) {
+		return new JobBuilder("job", jobRepository)
+				.start(step1)
 				.build();
 	}
 

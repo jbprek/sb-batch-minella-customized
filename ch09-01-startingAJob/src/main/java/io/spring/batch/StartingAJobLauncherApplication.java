@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class StartingAJobApplication {
+public class StartingAJobLauncherApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StartingAJobApplication.class, args);
+		SpringApplication.run(StartingAJobLauncherApplication.class, args);
 	}
 }

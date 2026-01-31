@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.spring.batch.controller;
+package io.spring.batch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Michael Minella
  */
-@Profile("launcher")
 @RestController
 @RequiredArgsConstructor
 public class JobLauncherController {
