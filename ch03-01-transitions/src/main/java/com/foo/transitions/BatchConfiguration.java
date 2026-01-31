@@ -33,6 +33,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 /**
  * @author Michael Minella
  */
@@ -88,7 +91,7 @@ public class BatchConfiguration {
             jobLauncher.run(
                     helloWorldJob,
                     new JobParametersBuilder()
-                            .addLong("time", System.currentTimeMillis()) // Ensure unique JobParameters
+                            .addLocalDateTime("time", LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)) // Ensure unique JobParameters
                             .toJobParameters()
             );
             log.info("Job execution completed.");
@@ -96,23 +99,23 @@ public class BatchConfiguration {
     }
 
 
-    @Bean
-    public Job transitionJobSimplestNext(JobRepository jobRepository) {
-        return new JobBuilder("transitionJobNext", jobRepository)
-                .start(step1())
-                .next(step2())
-                .next(step3())
-                .build();
-    }
+//    @Bean
+//    public Job transitionJobSimplestNext(JobRepository jobRepository) {
+//        return new JobBuilder("transitionJobNext", jobRepository)
+//                .start(step1())
+//                .next(step2())
+//                .next(step3())
+//                .build();
+//    }
 
 //     Same as above, but using on() and from() to specify the transition
 //    @Bean
 //    public Job transitionJobSimpleNext(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 //        return new JobBuilder("transitionJobNext", jobRepository)
-//                .start(step1(jobRepository, transactionManager))
-//                .on("COMPLETED").to(step2(jobRepository, transactionManager))
-//                .from(step2(jobRepository, transactionManager)).on("COMPLETED").to(step3(jobRepository, transactionManager))
-//                .from(step3(jobRepository, transactionManager)).end()
+//                .start(step1())
+//                .on("COMPLETED").to(step2())
+//                .from(step2()).on("COMPLETED").to(step3())
+//                .from(step3()).end()
 //                .build();
 //    }
 
@@ -120,32 +123,23 @@ public class BatchConfiguration {
 //    @Bean
 //    public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
 //        return new JobBuilder("transitionJobNext", jobRepository)
-//                .start(step1(jobRepository, transactionManager))
-//                .on("COMPLETED").to(step2(jobRepository, transactionManager))
-//                .from(step2(jobRepository, transactionManager)).on("COMPLETED").fail()
-//                .from(step3(jobRepository, transactionManager)).end()
+//                .start(step1())
+//                .on("COMPLETED").to(step2())
+//                .from(step2()).on("COMPLETED").fail()
+//                .from(step3()).end()
 //                .build();
 //    }
 
-    // Demo of fail()
-//    @Bean
-//    public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-//        return new JobBuilder("transitionJobNext", jobRepository)
-//                .start(step1(jobRepository, transactionManager))
-//                .on("COMPLETED").to(step2(jobRepository, transactionManager))
-//                .from(step2(jobRepository, transactionManager)).on("COMPLETED").fail()
-//                .from(step3(jobRepository, transactionManager)).end()
-//                .build();
-//        }
 
-//    @Bean
-//    public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-//        return new JobBuilder("transitionJobNext", jobRepository, transactionManager)
-//
-//                .start(step1(jobRepository, transactionManager))
-//                .on("COMPLETED").to(step2(jobRepository, transactionManager))
-//                .from(step2(jobRepository, transactionManager)).on("COMPLETED").stopAndRestart(step3(jobRepository, transactionManager))
-//                .from(step3(jobRepository, transactionManager)).end()
-//                .build();
-//    }
+
+    @Bean
+    public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new JobBuilder("transitionJobNext", jobRepository )
+
+                .start(step1())
+                .on("COMPLETED").to(step2())
+                .from(step2()).on("COMPLETED").stopAndRestart(step3())
+                .from(step3()).end()
+                .build();
+    }
 }
