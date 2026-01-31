@@ -16,13 +16,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import javax.sql.DataSource;
-import java.time.LocalDateTime;
 
 
 @Slf4j
@@ -34,18 +28,6 @@ public class BatchConfiguration {
     private final JobRepository jobRepository;
 
     private final PlatformTransactionManager transactionManager;
-
-    @Bean
-    public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
-        DataSourceInitializer initializer = new DataSourceInitializer();
-        initializer.setDataSource(dataSource);
-
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("org/springframework/batch/core/schema-h2.sql"));
-        initializer.setDatabasePopulator(populator);
-
-        return initializer;
-    }
 
     @Bean
     public Step step1() {

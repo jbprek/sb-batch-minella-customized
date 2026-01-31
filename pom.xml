@@ -10,6 +10,7 @@
     
     <modules>
         <module>ch02-01-hello-batch</module>
+        <module>ch02-01-hello-batch-mysql</module>
         <module>ch03-01-transitions</module>
         <module>ch03-02-flow</module>
 		<module>ch03-03-split</module>

@@ -1,4 +1,4 @@
-package io.spring.batch;
+package com.foo.split;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
