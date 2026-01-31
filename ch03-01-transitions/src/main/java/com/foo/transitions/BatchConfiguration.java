@@ -135,7 +135,7 @@ public class BatchConfiguration {
 
     // Demo of stopAndRestart - execute within the same minute and see step3 executed
     @Bean
-    public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+    public Job transitionStopAndRestartDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new JobBuilder("transitionJobNext", jobRepository )
 
                 .start(step1())
