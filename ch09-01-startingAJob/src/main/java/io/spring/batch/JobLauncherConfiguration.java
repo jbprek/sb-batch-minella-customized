@@ -36,15 +36,8 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @author Michael Minella
  */
 @Configuration
-@RequiredArgsConstructor
 @Slf4j
 public class JobLauncherConfiguration  {
-
-	private final JobRepository jobRepository;
-
-	private final PlatformTransactionManager transactionManager;
-
-	public final JobLauncher jobLauncher;
 
 	@Bean
 	@StepScope
@@ -56,14 +49,14 @@ public class JobLauncherConfiguration  {
 	}
 
 	@Bean
-	public Step step1(Tasklet tasklet) {
+	public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager, Tasklet tasklet) {
 		return new StepBuilder("step1", jobRepository)
 				.tasklet(tasklet, transactionManager)
 				.build();
 	}
 
 	@Bean
-	public Job job(Step step1) {
+	public Job job(JobRepository jobRepository, Step step1) {
 		return new JobBuilder("job", jobRepository)
 				.start(step1)
 				.build();
