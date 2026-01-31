@@ -21,6 +21,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
@@ -40,6 +41,7 @@ import java.time.temporal.ChronoUnit;
  * @author Michael Minella
  */
 @Configuration
+@EnableBatchProcessing
 @Slf4j
 @RequiredArgsConstructor
 public class BatchConfiguration {
@@ -131,7 +133,7 @@ public class BatchConfiguration {
 //    }
 
 
-
+    // Demo of stopAndRestart - execute within the same minute and see step3 executed
     @Bean
     public Job transitionJobFaildDemo(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new JobBuilder("transitionJobNext", jobRepository )

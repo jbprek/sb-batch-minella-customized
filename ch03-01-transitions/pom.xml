@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.spring.batch</groupId>
+    <artifactId>ch03-01-transitions</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<artifactId>ch03-01-transitions</artifactId>
 
 	<name>ch03-01-transitions</name>
 	<description>Demo for transitions in Spring Batch</description>
