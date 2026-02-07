@@ -12,9 +12,13 @@
         <module>ch02-01-hello-batch</module>
         <module>ch02-01-hello-batch-mysql</module>
         <module>ch03-01-transitions</module>
+        <!-- WIP -->
         <module>ch03-02-flow</module>
+        <!-- WIP -->
 		<module>ch03-03-split</module>
+        <!-- WIP -->
 		<module>ch03-04-decisions</module>
+        <!-- WIP -->
 		<module>ch03-05-nestedJobs</module>
 		<module>ch03-06-listeners</module>
 		<module>ch03-07-jobParameters</module>

@@ -22,15 +22,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @Configuration
 @EnableBatchProcessing
-@RequiredArgsConstructor
 public class BatchConfiguration {
 
-    private final JobRepository jobRepository;
-
-    private final PlatformTransactionManager transactionManager;
-
     @Bean
-    public Step step1() {
+    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("step1", jobRepository)
                 .tasklet((StepContribution stepContribution, ChunkContext chunkContext) -> {
                     // Simulates step execution logic
@@ -41,7 +36,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job helloWorldJob(Step step1) {
+    public Job helloWorldJob(JobRepository jobRepository, Step step1) {
         return new JobBuilder("helloWorldJob", jobRepository)
                 .start(step1)
                 .build();

@@ -15,35 +15,39 @@
  */
 package io.spring.batch.configuration;
 
-import java.util.Arrays;
-import java.util.List;
-
 import io.spring.batch.listener.ChunkListener;
 import io.spring.batch.listener.JobListener;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Michael Minella
  */
+@Slf4j
 @Configuration
+@EnableBatchProcessing
+@RequiredArgsConstructor
 public class ListenerJobConfiguration {
 
-	@Autowired
-	private JobBuilderFactory jobBuilderFactory;
+	private final JobRepository jobRepository;
 
-	@Autowired
-	private StepBuilderFactory stepBuilderFactory;
+	private final PlatformTransactionManager transactionManager;
 
 	@Bean
 	public ItemReader<String> reader() {
@@ -54,9 +58,9 @@ public class ListenerJobConfiguration {
 	public ItemWriter<String> writer() {
 		return new ItemWriter<String>() {
 			@Override
-			public void write(List<? extends String> items) throws Exception {
+			public void write(Chunk<? extends String> items) throws Exception {
 				for (String item : items) {
-					System.out.println("Writing item " + item);
+					log.info("Writing item " + item);
 				}
 			}
 		};
@@ -64,7 +68,7 @@ public class ListenerJobConfiguration {
 
 	@Bean
 	public Step step1() {
-		return stepBuilderFactory.get("step1")
+		return new StepBuilder("step1", jobRepository)
 				.<String, String>chunk(2)
 				.faultTolerant()
 				.listener(new ChunkListener())

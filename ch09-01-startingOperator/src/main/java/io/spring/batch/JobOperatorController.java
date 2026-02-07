@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.spring.batch.controller;
+package io.spring.batch;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
